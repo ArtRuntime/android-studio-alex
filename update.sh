@@ -12,6 +12,7 @@ python_output=$(python main.py)
 # Extract desired version and sha256 from the Python output
 desired_version=$(echo "$python_output" | jq -r '.version')
 desired_sha256=$(echo "$python_output" | jq -r '.sha256')
+desired_url=$(echo "$python_output" | jq -r '.url')
 
 echo "$desired_sha256"
 # Define template and output files
@@ -49,8 +50,9 @@ fi
 
 # Function to generate a new PKGBUILD file with updated version and sha256
 generate_pkgbuild() {
-    echo "Generating a new PKGBUILD with version $desired_version and sha256 $desired_sha256"
-    sed "s/{VERSION}/$desired_version/g; s/{SHA256}/$desired_sha256/g" "$PKGBUILD_TEMPLATE" > "$NEW_PKGBUILD"
+    # Escape URL for sed (forward slashes)
+    escaped_url=$(echo "$desired_url" | sed 's/[&/\]/\\&/g')
+    sed "s/{VERSION}/$desired_version/g; s/{SHA256}/$desired_sha256/g; s|{URL}|$desired_url|g" "$PKGBUILD_TEMPLATE" > "$NEW_PKGBUILD"
     echo "$desired_version" > currentversion.txt
 }
 

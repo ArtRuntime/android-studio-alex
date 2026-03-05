@@ -1,9 +1,9 @@
-import subprocess
-from bs4 import BeautifulSoup
 import json
+from bs4 import BeautifulSoup
 
 with open("studio.html", "r", encoding="utf-8") as file:
     page_content = file.read()
+
 soup = BeautifulSoup(page_content, 'html.parser')
 download_table = soup.find("table", class_="download")
 output_data = {}
@@ -14,13 +14,25 @@ if download_table:
         columns = row.find_all("td")
         platform = columns[0].get_text(separator=" ").strip()
         if "Linux" in platform:
-            file_name = columns[1].find("button").get_text(strip=True)
+            button = columns[1].find("button")
+            if not button:
+                continue
+            file_name = button.get_text(strip=True)
             file_size = columns[2].get_text(strip=True)
             sha_checksum = columns[3].get_text(strip=True)
-            version = file_name.split('-')[2]
+
+            # Extract the download URL from the modal dialog link
+            dialog_id = button.get("data-modal-dialog-id", "")
+            download_link = soup.find("a", id=f"agree-button__{dialog_id}")
+            url = download_link.get("href", "") if download_link else ""
+
+            # Extract version from the URL path (e.g., .../ide-zips/2025.3.2.6/...)
+            version = url.split("/")[-2] if url else file_name.split("-")[2]
+
             output_data = {
                 "platform": platform,
                 "version": version,
+                "url": url,
                 "fsize": file_size,
                 "sha256": sha_checksum
             }

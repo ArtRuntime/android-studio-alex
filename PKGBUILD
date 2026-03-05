@@ -1,5 +1,5 @@
 pkgname=android-studio-alex
-pkgver=2025.2.3.9
+pkgver=2025.3.2.6
 pkgrel=1
 pkgdesc="The official Android IDE (Stable branch)"
 arch=('x86_64')
@@ -13,10 +13,10 @@ optdepends=('gtk2: GTK+ look and feel'
 provides=('android-studio')
 conflicts=('android-studio')
 options=('!strip')
-source=("https://edgedl.me.gvt1.com/android/studio/ide-zips/$pkgver/android-studio-$pkgver-linux.tar.gz"
+source=("https://edgedl.me.gvt1.com/android/studio/ide-zips/$pkgver/android-studio-panda2-linux.tar.gz"
         "$pkgname.desktop"
         "license.html")
-sha256sums=('986ea6cacb36da723f2c8550cccd7d8cd3e8b8b7bb2446d3a8bf39bbaf91abc1'
+sha256sums=('32942d8cd7688192cf3cd07bf282fb120035b9bd9b56e6f13c5540e6d39807e9'
             '51eb6978307c0785808758e174c024a82523ec1d6a5c9b8354f446467065caa6'
             '9a7563f7fb88c9a83df6cee9731660dc73a039ab594747e9e774916275b2e23e')
 
