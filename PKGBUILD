@@ -17,7 +17,7 @@ source=("https://edgedl.me.gvt1.com/android/studio/ide-zips/$pkgver/android-stud
         "$pkgname.desktop"
         "license.html")
 sha256sums=('32942d8cd7688192cf3cd07bf282fb120035b9bd9b56e6f13c5540e6d39807e9'
-            '51eb6978307c0785808758e174c024a82523ec1d6a5c9b8354f446467065caa6'
+            'f29b636e6e1d93cf11df8aeb91e449ab7eca4042c39d806043134ed48245d8c0'
             '9a7563f7fb88c9a83df6cee9731660dc73a039ab594747e9e774916275b2e23e')
 
 package() {
