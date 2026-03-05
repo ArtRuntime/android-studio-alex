@@ -13,7 +13,7 @@ optdepends=('gtk2: GTK+ look and feel'
 provides=('android-studio')
 conflicts=('android-studio')
 options=('!strip')
-source=("https://edgedl.me.gvt1.com/android/studio/ide-zips/$pkgver/android-studio-panda2-linux.tar.gz"
+source=("https://edgedl.me.gvt1.com/android/studio/ide-zips/2025.3.2.6/android-studio-panda2-linux.tar.gz"
         "$pkgname.desktop"
         "license.html")
 sha256sums=('32942d8cd7688192cf3cd07bf282fb120035b9bd9b56e6f13c5540e6d39807e9'
