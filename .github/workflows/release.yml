@@ -31,8 +31,6 @@ jobs:
            git clone https://"honeypie112":"${{ secrets.GITHUBTOKEN }}"@github.com/honeypie112/android-studio-alex build
            cd build
            wget https://developer.android.com/studio -O studio.html
-           bash update.sh ${{ secrets.BOTTOKEN }}
-
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -42,3 +40,8 @@ jobs:
           body: Workflow Hash ```${{ github.sha }}```
           files: |
             *.pkg.tar.zst
+
+      - name: Update PKGBUILD and push
+        run: |
+          cd build
+          bash update.sh ${{ secrets.BOTTOKEN }}
