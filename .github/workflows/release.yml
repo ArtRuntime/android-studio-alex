@@ -41,7 +41,14 @@ jobs:
           files: |
             *.pkg.tar.zst
 
-      - name: Update PKGBUILD and push
-        run: |
-          cd build
-          bash update.sh ${{ secrets.BOTTOKEN }}
+      - name: Generate Tag
+        run: echo "TAG_NAME=v$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+          body: Workflow Hash `${{ github.sha }}`
+          files: |
+            *.pkg.tar.zst
