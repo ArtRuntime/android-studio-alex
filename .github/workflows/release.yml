@@ -2,12 +2,9 @@ name: auto-update
 
 on:
   schedule:
-      - cron: "0 3 * * *"  # This is 9 AM IST (India Standard Time, UTC+5:30)
-        # Runs every 9 hours
-      - cron: "0 */9 * * *"
-
+    - cron: "0 3 * * *"     # 9 AM IST
+    - cron: "0 */9 * * *"   # every 9 hours
   workflow_dispatch:
-
 
 permissions:
   contents: write
@@ -20,27 +17,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Pull Arch Linux Docker image
         run: docker pull archlinux:latest
 
-      - name: Clone the repo and Building package
+      - name: Clone the repo and build package
         run: |
-           git clone https://"honeypie112":"${{ secrets.GITHUBTOKEN }}"@github.com/honeypie112/android-studio-alex build
-           cd build
-           wget https://developer.android.com/studio -O studio.html
+          git clone https://"honeypie112":"${{ secrets.GITHUBTOKEN }}"@github.com/honeypie112/android-studio-alex build
+          cd build
+          wget https://developer.android.com/studio -O studio.html
 
-      - name: Release
-        uses: softprops/action-gh-release@v2.5.0
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-          release_name: ${{ env.TAG_NAME }}
-          body: Workflow Hash ```${{ github.sha }}```
-          files: |
-            *.pkg.tar.zst
-
+      # Generate automatic tag
       - name: Generate Tag
         run: echo "TAG_NAME=v$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
 
@@ -50,5 +40,12 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
           name: ${{ env.TAG_NAME }}
           body: Workflow Hash `${{ github.sha }}`
-          files: |
-            *.pkg.tar.zst
+          files: build/*.pkg.tar.zst
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUBTOKEN }}
+
+      - name: Update PKGBUILD and push
+        run: |
+          cd build
+          bash update.sh ${{ secrets.BOTTOKEN }}
