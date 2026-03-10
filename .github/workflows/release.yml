@@ -2,8 +2,8 @@ name: auto-update
 
 on:
   schedule:
-      - cron: "0 3 * * *"   # 9 AM IST
-      - cron: "0 */9 * * *" # every 9 hours
+    - cron: "0 3 * * *"      # 9 AM IST
+    - cron: "0 */9 * * *"    # every 9 hours
   workflow_dispatch:
 
 permissions:
@@ -17,23 +17,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Pull Arch Linux Docker image
         run: docker pull archlinux:latest
 
-      - name: Clone the repo and Building package
+      - name: Clone repo
         run: |
-           git clone https://"honeypie112":"${{ secrets.GITHUBTOKEN }}"@github.com/honeypie112/android-studio-alex build
-           cd build
-           wget https://developer.android.com/studio -O studio.html
+          git clone https://"honeypie112":"${{ secrets.GITHUBTOKEN }}"@github.com/honeypie112/android-studio-alex build
 
-           # YOUR PACKAGE BUILD COMMANDS SHOULD BE HERE
-           # (makepkg or whatever your repo uses)
-           makepkg -sf --noconfirm
+      - name: Build package in Arch container
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/build:/build \
+            archlinux:latest \
+            bash -c "
+              pacman -Syu --noconfirm base-devel git wget sudo &&
+              useradd builduser &&
+              echo 'builduser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers &&
+              chown -R builduser /build &&
+              su builduser -c '
+                cd /build
+                wget https://developer.android.com/studio -O studio.html
+                makepkg -sf --noconfirm
+              '
+            "
 
-      # 🔧 Fix: Generate tag for release
       - name: Generate Tag
         run: echo "TAG_NAME=v$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
 
